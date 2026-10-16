@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>D Collector 設定</title>
+  <style>
+    body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;max-width:720px;margin:30px auto;padding:0 18px;background:#0f172a;color:#e5e7eb}
+    .card{background:#111827;border:1px solid #334155;border-radius:14px;padding:18px;margin:16px 0}label{display:block;margin:12px 0 6px}
+    input{width:100%;box-sizing:border-box;padding:10px;border-radius:9px;border:1px solid #475569;background:#020617;color:#fff}
+    button{padding:10px 16px;border:0;border-radius:9px;margin-right:8px;font-weight:700;cursor:pointer}.save{background:#22c55e;color:#052e16}.delete{background:#334155;color:#fff}
+    .note{font-size:13px;color:#cbd5e1;line-height:1.7}.ok{color:#86efac}
+  </style>
+</head>
+<body>
+  <h1>D Collector 設定</h1>
+  <div class="card">
+    <label for="token">GitHub fine-grained token</label>
+    <input id="token" type="password" autocomplete="off" placeholder="github_pat_...">
+    <label for="repo">Repository</label>
+    <input id="repo" value="k4yxf8bcrk-ui/pokepoke1">
+    <label for="branch">Branch</label>
+    <input id="branch" value="main">
+    <p class="note">トークンはこのPCのChrome拡張機能ストレージだけに保存します。対象リポジトリの Contents: Read and write のみに絞った fine-grained token を推奨します。</p>
+    <button id="save" class="save">保存</button><button id="remove" class="delete">トークン削除</button>
+    <p id="status" class="note"></p>
+  </div>
+  <div class="card note">
+    取得対象は、ブラウザで正常に表示できている公開ページのみです。403 / 429 / CAPTCHA / Cloudflare等が表示された場合、連続取得は停止します。
+  </div>
+  <script src="options.js"></script>
+</body>
+</html>
