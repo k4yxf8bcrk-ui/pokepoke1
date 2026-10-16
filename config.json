@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "siteLabel": "D",
+  "indexing": false,
+  "analysis": {
+    "weekdayMinGames": 2000,
+    "similarCases": 12,
+    "topN": 10,
+    "regWeight": "empirical",
+    "smallSampleShrinkage": 10
+  },
+  "draft": {
+    "defaultPaidPicks": 3,
+    "includeFreeMachineNumbers": false,
+    "includeCaution": true
+  }
+}
