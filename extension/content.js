@@ -7,125 +7,162 @@
   };
   const isoDate = (y, m, d) => `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
 
-  function pageDate() {
-    const src = `${location.href} ${document.title} ${document.body?.innerText?.slice(0, 4000) || ""}`;
+  function dateFromText(src) {
+    src = String(src || "");
     let m = src.match(/(20\d{2})[-/.年](\d{1,2})[-/.月](\d{1,2})日?/);
     if (m) return isoDate(m[1], m[2], m[3]);
     m = src.match(/(?:^|\D)(20\d{2})(\d{2})(\d{2})(?:\D|$)/);
     if (m) return isoDate(m[1], m[2], m[3]);
     return null;
   }
-
+  function pageDate() {
+    return dateFromText(location.href) || dateFromText(document.title) || dateFromText(document.body?.innerText?.slice(0, 3000));
+  }
   function blockedPage() {
-    const s = norm(`${document.title} ${document.body?.innerText?.slice(0, 6000) || ""}`).toLowerCase();
-    const words = ["just a moment", "cloudflare", "too many requests", "captcha", "アクセスが制限", "アクセス制限", "429", "403 forbidden"];
+    const s = norm(`${document.title} ${document.body?.innerText?.slice(0, 7000) || ""}`).toLowerCase();
+    const words = ["just a moment", "too many requests", "captcha", "access denied", "アクセスが制限", "アクセス制限", "429", "403 forbidden", "cf-chl-"];
     return words.find((w) => s.includes(w)) || null;
   }
-
-  function headerIndex(headers, pats) {
-    return headers.findIndex((h) => pats.some((p) => p.test(h)));
+  function overlayLikely() {
+    const nodes = [...document.querySelectorAll("body *")].slice(0, 3000);
+    return nodes.some((el) => {
+      const st = getComputedStyle(el);
+      if (st.position !== "fixed") return false;
+      const r = el.getBoundingClientRect();
+      const z = Number(st.zIndex);
+      return r.width > innerWidth * .7 && r.height > innerHeight * .7 && (Number.isFinite(z) ? z >= 100 : false);
+    });
+  }
+  function cleanModel(s) {
+    return norm(s).replace(/^[\s・●■★☆\-]+/, "").replace(/\s+(データ|一覧).*$/i, "").trim();
+  }
+  function valid(r) {
+    if (!r || !/^\d{3,5}$/.test(String(r.machineNo || ""))) return false;
+    if (!/ジャグラー/i.test(String(r.machine || ""))) return false;
+    if (r.games == null || r.diff == null || r.bb == null || r.rb == null) return false;
+    if (r.games < 0 || r.games > 20000) return false;
+    if (Math.abs(r.diff) > 20000) return false;
+    if (r.bb < 0 || r.bb > 120 || r.rb < 0 || r.rb > 120) return false;
+    return true;
   }
 
-  function nearestModel(table) {
-    const cap = norm(table.querySelector("caption")?.innerText);
-    if (/ジャグラー/i.test(cap)) return cap;
-    let node = table.previousElementSibling;
-    for (let i = 0; node && i < 8; i++, node = node.previousElementSibling) {
-      const txt = norm(node.innerText);
-      if (/ジャグラー/i.test(txt) && txt.length < 180) return txt;
-    }
-    const headings = [...document.querySelectorAll("h1,h2,h3,h4,h5,strong")];
-    const preceding = headings.filter((h) => (h.compareDocumentPosition(table) & Node.DOCUMENT_POSITION_FOLLOWING));
-    const h = preceding.reverse().find((x) => /ジャグラー/i.test(norm(x.innerText)) && norm(x.innerText).length < 180);
-    return h ? norm(h.innerText) : "";
-  }
-
-  function parseTable(table, date) {
-    const trs = [...table.querySelectorAll("tr")];
-    if (!trs.length) return [];
-    const headerRow = trs.find((tr) => tr.querySelectorAll("th").length >= 2) || trs[0];
-    const headers = [...headerRow.querySelectorAll("th,td")].map((x) => norm(x.innerText));
-    const idx = {
-      no: headerIndex(headers, [/^台番$/, /台番号/, /^番号$/]),
-      machine: headerIndex(headers, [/機種名/, /^機種$/]),
-      games: headerIndex(headers, [/ゲーム/, /^G数$/i, /回転/]),
-      diff: headerIndex(headers, [/差枚/, /出玉/, /差.*枚/]),
-      bb: headerIndex(headers, [/^BB$/i, /BIG/i, /ビッグ/]),
-      rb: headerIndex(headers, [/^RB$/i, /^REG$/i, /レギュラー/])
-    };
-    const fallbackModel = nearestModel(table);
-    // 機種列もジャグラー見出しも無い表は、他機種混入を避けるため読まない。
-    if (idx.machine < 0 && !/ジャグラー/i.test(fallbackModel)) return [];
-
-    const rows = [];
-    for (const tr of trs) {
-      if (tr === headerRow) continue;
-      const cells = [...tr.querySelectorAll("td")].map((x) => norm(x.innerText));
-      if (cells.length < 3) continue;
-      let no = idx.no >= 0 ? norm(cells[idx.no]) : "";
-      if (!/^\d{3,5}$/.test(no)) {
-        const candidate = cells.find((c) => /^\d{3,5}$/.test(c));
-        no = candidate || "";
-      }
-      if (!no) continue;
-      const model = idx.machine >= 0 ? norm(cells[idx.machine]) : fallbackModel;
-      if (!/ジャグラー/i.test(model)) continue;
-      const rec = {
+  // 新ハナビ版と同じ考え方：実HTMLの機種行を直接読む。
+  // 全データ一覧型: [機種名, 台番, G数, 差枚, BB, RB, ...]
+  function parseExactMachineRows(date) {
+    const out = [];
+    for (const tr of document.querySelectorAll("tr")) {
+      const cells = [...tr.querySelectorAll("th,td")].map((x) => norm(x.innerText));
+      if (cells.length < 6) continue;
+      if (!/ジャグラー/i.test(cells[0])) continue;
+      const no = (cells[1].match(/\d{3,5}/) || [])[0] || "";
+      const r = {
         date,
         machineNo: no,
-        machine: model,
-        games: idx.games >= 0 ? toInt(cells[idx.games]) : null,
-        diff: idx.diff >= 0 ? toInt(cells[idx.diff]) : null,
-        bb: idx.bb >= 0 ? toInt(cells[idx.bb]) : null,
-        rb: idx.rb >= 0 ? toInt(cells[idx.rb]) : null,
-        source: "anaslo"
+        machine: cleanModel(cells[0]),
+        games: toInt(cells[2]),
+        diff: toInt(cells[3]),
+        bb: toInt(cells[4]),
+        rb: toInt(cells[5]),
+        source: "anaslo",
+        strategy: "exact-machine-tr-rows"
       };
-      // ヘッダーが取れない場合はG数だけ安全側で補助。BB/RB/差枚は列名が無ければ推測しない。
-      if (rec.games == null) {
-        const nums = cells.map(toInt);
-        const ni = cells.indexOf(no);
-        const after = ni >= 0 ? nums.slice(ni + 1) : nums;
-        const gameLike = after.find((v) => Number.isInteger(v) && v >= 100 && v <= 20000);
-        if (gameLike != null) rec.games = gameLike;
-      }
-      if ([rec.games, rec.diff, rec.bb, rec.rb].every((v) => v == null)) continue;
-      rows.push(rec);
+      if (valid(r)) out.push(r);
     }
-    return rows;
+    return out;
+  }
+
+  function headingBefore(table) {
+    const cap = norm(table.querySelector("caption")?.innerText);
+    if (/ジャグラー/i.test(cap)) return cleanModel(cap);
+    let n = table.previousElementSibling;
+    for (let i = 0; n && i < 10; i++, n = n.previousElementSibling) {
+      const t = norm(n.innerText);
+      if (/ジャグラー/i.test(t) && t.length < 160) return cleanModel(t);
+    }
+    const hs = [...document.querySelectorAll("h1,h2,h3,h4,h5,strong")];
+    const prev = hs.filter(h => h.compareDocumentPosition(table) & Node.DOCUMENT_POSITION_FOLLOWING).reverse();
+    const h = prev.find(x => /ジャグラー/i.test(norm(x.innerText)) && norm(x.innerText).length < 160);
+    return h ? cleanModel(h.innerText) : "";
+  }
+
+  // 機種ごとの表型: 見出し=機種名 / [台番, G数, 差枚, BB, RB, ...]
+  function parseSectionTables(date) {
+    const out = [];
+    for (const table of document.querySelectorAll("table")) {
+      const model = headingBefore(table);
+      if (!/ジャグラー/i.test(model)) continue;
+      for (const tr of table.querySelectorAll("tr")) {
+        const cells = [...tr.querySelectorAll("td")].map((x) => norm(x.innerText));
+        if (cells.length < 5) continue;
+        const no = (cells[0].match(/^\D*(\d{3,5})\D*$/) || [])[1] || "";
+        const r = {
+          date,
+          machineNo: no,
+          machine: model,
+          games: toInt(cells[1]),
+          diff: toInt(cells[2]),
+          bb: toInt(cells[3]),
+          rb: toInt(cells[4]),
+          source: "anaslo",
+          strategy: "section-table"
+        };
+        if (valid(r)) out.push(r);
+      }
+    }
+    return out;
   }
 
   function collect() {
-    const blocked = blockedPage();
-    if (blocked) return { ok: false, blocked: true, reason: blocked, url: location.href };
     const date = pageDate();
-    if (!date) return { ok: false, reason: "日付を判定できませんでした", url: location.href };
-    const tables = [...document.querySelectorAll("table")];
-    let rows = tables.flatMap((t) => parseTable(t, date));
-    const seen = new Map();
-    for (const r of rows) {
-      const k = `${r.date}|${r.machineNo}`;
-      const old = seen.get(k);
-      if (!old) seen.set(k, r);
-      else {
-        for (const key of ["machine", "games", "diff", "bb", "rb"]) {
-          if ((old[key] == null || old[key] === "") && r[key] != null && r[key] !== "") old[key] = r[key];
-        }
-      }
+    if (!date) return { ok: false, reason: "日付を判定できませんでした", url: location.href, blocked: !!blockedPage() };
+    let rows = parseExactMachineRows(date);
+    let strategy = "exact-machine-tr-rows";
+    if (!rows.length) {
+      rows = parseSectionTables(date);
+      strategy = "section-table";
     }
-    rows = [...seen.values()];
+    const seen = new Map();
+    for (const r of rows) seen.set(`${r.date}|${r.machineNo}`, r);
+    rows = [...seen.values()].sort((a,b) => Number(a.machineNo) - Number(b.machineNo));
+    const blocked = blockedPage();
+    if (!rows.length && blocked) return { ok:false, blocked:true, reason:blocked, date, url:location.href, overlay:overlayLikely(), rows:[] };
     return {
       ok: rows.length > 0,
+      blocked: false,
+      reason: rows.length ? null : "ジャグラーの実データ行を見つけられませんでした",
       date,
       url: location.href,
       title: document.title,
-      tableCount: tables.length,
+      strategy,
+      overlay: overlayLikely(),
       rows,
-      sample: rows.slice(0, 5),
-      reason: rows.length ? null : "ジャグラーデータを見つけられませんでした"
+      sample: rows.slice(0, 5)
     };
   }
 
+  function dateLinks() {
+    const map = new Map();
+    for (const a of document.querySelectorAll("a[href]")) {
+      const href = a.href;
+      if (!/^https:\/\/(www\.)?ana-slo\.com\//i.test(href)) continue;
+      if (!/-data\/?(?:[?#].*)?$/i.test(href)) continue;
+      const date = dateFromText(href) || dateFromText(a.innerText);
+      if (!date) continue;
+      map.set(date, { date, href, text: norm(a.innerText) });
+    }
+    return [...map.values()].sort((a,b) => a.date.localeCompare(b.date));
+  }
+
   chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
-    if (msg?.type === "COLLECT_PAGE") sendResponse(collect());
+    if (msg?.type === "COLLECT_PAGE") return sendResponse(collect());
+    if (msg?.type === "GET_DATE_LINKS") return sendResponse({ ok:true, url:location.href, links:dateLinks(), blocked:!!blockedPage() });
+    if (msg?.type === "CLICK_LINK") {
+      const target = String(msg.href || "");
+      const a = [...document.querySelectorAll("a[href]")].find(x => x.href === target);
+      if (a) { a.click(); sendResponse({ok:true, clicked:true}); }
+      else { location.href = target; sendResponse({ok:true, clicked:false}); }
+      return;
+    }
+    if (msg?.type === "PAGE_INFO") return sendResponse({ ok:true, date:pageDate(), blocked:!!blockedPage(), overlay:overlayLikely(), url:location.href, links:dateLinks().length });
   });
 })();
