@@ -34,16 +34,17 @@
       const txt = norm(node.innerText);
       if (/ジャグラー/i.test(txt) && txt.length < 180) return txt;
     }
-    const parentText = norm(table.parentElement?.innerText?.slice(0, 600));
-    const mm = parentText.match(/[^\n]{0,50}ジャグラー[^\n]{0,50}/i);
-    return mm ? norm(mm[0]) : "";
+    const headings = [...document.querySelectorAll("h1,h2,h3,h4,h5,strong")];
+    const preceding = headings.filter((h) => (h.compareDocumentPosition(table) & Node.DOCUMENT_POSITION_FOLLOWING));
+    const h = preceding.reverse().find((x) => /ジャグラー/i.test(norm(x.innerText)) && norm(x.innerText).length < 180);
+    return h ? norm(h.innerText) : "";
   }
 
   function parseTable(table, date) {
     const trs = [...table.querySelectorAll("tr")];
     if (!trs.length) return [];
-    let headerRow = trs.find((tr) => tr.querySelectorAll("th").length >= 2) || trs[0];
-    let headers = [...headerRow.querySelectorAll("th,td")].map((x) => norm(x.innerText));
+    const headerRow = trs.find((tr) => tr.querySelectorAll("th").length >= 2) || trs[0];
+    const headers = [...headerRow.querySelectorAll("th,td")].map((x) => norm(x.innerText));
     const idx = {
       no: headerIndex(headers, [/^台番$/, /台番号/, /^番号$/]),
       machine: headerIndex(headers, [/機種名/, /^機種$/]),
@@ -53,6 +54,9 @@
       rb: headerIndex(headers, [/^RB$/i, /^REG$/i, /レギュラー/])
     };
     const fallbackModel = nearestModel(table);
+    // 機種列もジャグラー見出しも無い表は、他機種混入を避けるため読まない。
+    if (idx.machine < 0 && !/ジャグラー/i.test(fallbackModel)) return [];
+
     const rows = [];
     for (const tr of trs) {
       if (tr === headerRow) continue;
@@ -65,18 +69,18 @@
       }
       if (!no) continue;
       const model = idx.machine >= 0 ? norm(cells[idx.machine]) : fallbackModel;
-      if (model && !/ジャグラー/i.test(model)) continue;
+      if (!/ジャグラー/i.test(model)) continue;
       const rec = {
         date,
         machineNo: no,
-        machine: model || "ジャグラー",
+        machine: model,
         games: idx.games >= 0 ? toInt(cells[idx.games]) : null,
         diff: idx.diff >= 0 ? toInt(cells[idx.diff]) : null,
         bb: idx.bb >= 0 ? toInt(cells[idx.bb]) : null,
         rb: idx.rb >= 0 ? toInt(cells[idx.rb]) : null,
         source: "anaslo"
       };
-      // ヘッダーが取れない場合は、よくある数値列を最低限補助。確定できない値は null のままにする。
+      // ヘッダーが取れない場合はG数だけ安全側で補助。BB/RB/差枚は列名が無ければ推測しない。
       if (rec.games == null) {
         const nums = cells.map(toInt);
         const ni = cells.indexOf(no);
