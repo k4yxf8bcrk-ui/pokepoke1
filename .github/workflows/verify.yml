@@ -1,0 +1,18 @@
+name: Verify workspace
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check JavaScript syntax
+        run: node --check app.js
+      - name: Check noindex
+        run: grep -q 'noindex,nofollow' index.html && grep -q 'Disallow: /' robots.txt
+      - name: Check required files
+        run: test -s index.html && test -s styles.css && test -s app.js && test -s data.json
