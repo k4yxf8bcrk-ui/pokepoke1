@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "D Collector",
-  "version": "1.0.0",
-  "description": "表示中の公開データを読み取り、D の data.json に同期します。",
+  "version": "2.0.0",
+  "description": "表示中の日別ページからジャグラーデータを保存し、公開データへ同期します。",
   "permissions": ["storage", "tabs"],
   "host_permissions": [
     "https://ana-slo.com/*",
@@ -13,8 +13,7 @@
     "service_worker": "service-worker.js"
   },
   "action": {
-    "default_popup": "popup.html",
-    "default_title": "D Collector"
+    "default_title": "D Collector を開く"
   },
   "options_page": "options.html",
   "content_scripts": [
