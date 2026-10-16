@@ -2,144 +2,66 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex">
 <meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet,noimageindex">
 <meta name="referrer" content="no-referrer">
-<title>D</title>
-<link rel="stylesheet" href="styles.css">
+<title>データ</title>
+<style>
+:root{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Yu Gothic",Meiryo,sans-serif;color:#202124;background:#f5f6f8}*{box-sizing:border-box}body{margin:0;background:#f5f6f8}.wrap{width:min(1180px,calc(100% - 28px));margin:24px auto 60px}.hero{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:16px}h1{font-size:clamp(24px,4vw,34px);margin:0 0 6px}h2{margin:0;font-size:19px}.muted{color:#6b7280;font-size:13px}.pill{padding:7px 12px;border-radius:999px;background:#e8f0fe;color:#174ea6;font-weight:800;white-space:nowrap}.panel{background:#fff;border:1px solid #e2e5e9;border-radius:14px;padding:18px;margin-top:15px;box-shadow:0 3px 14px rgba(0,0,0,.035)}.controls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.controls label{font-weight:800;font-size:13px;display:flex;flex-direction:column;gap:6px}select{width:100%;border:1px solid #cfd4dc;border-radius:9px;padding:10px 11px;background:#fff;font:inherit}.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:15px}.card{border:1px solid #e1e5eb;border-radius:12px;padding:13px;background:#fafbfc}.card .k{font-size:12px;color:#6b7280}.card .v{font-size:19px;font-weight:900;margin-top:5px;font-variant-numeric:tabular-nums}.blue{color:#1a73e8}.red{color:#d93025}.chartWrap{position:relative;margin-top:14px;border:1px solid #e1e5eb;border-radius:12px;overflow:hidden;background:#fff}.chartWrap canvas{display:block;width:100%;height:430px}.tooltip{display:none;position:absolute;z-index:2;min-width:165px;padding:8px 10px;border-radius:8px;background:rgba(17,24,39,.94);color:#fff;font-size:12px;line-height:1.55;pointer-events:none}.legend{margin-top:9px;color:#667085;font-size:12px;line-height:1.7}.tableWrap{overflow:auto;margin-top:12px;border:1px solid #e1e5eb;border-radius:10px}table{width:100%;min-width:980px;border-collapse:collapse;font-variant-numeric:tabular-nums}th,td{padding:8px 10px;border-bottom:1px solid #edf0f3;text-align:right;white-space:nowrap;font-size:13px}th{background:#f7f8fa;position:sticky;top:0;color:#4b5563}th:nth-child(1),td:nth-child(1),th:nth-child(3),td:nth-child(3){text-align:left}.status{padding:14px;border-radius:10px;background:#f7f9fc;color:#4b5563;line-height:1.7}.error{background:#fff0ef;color:#a61b14;border:1px solid #f0c1bd}.trendBox{margin-top:14px;border:1px solid #dfe5ee;border-radius:12px;padding:14px;background:#f8fafc}.trendBox:empty{display:none}.trendGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}.trendCard{background:#fff;border:1px solid #e1e5eb;border-radius:10px;padding:11px}.trendCard .k{font-size:11px;color:#6b7280}.trendCard .v{font-size:17px;font-weight:900;margin-top:4px}.sectionHead{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}.tiny{font-size:11px;color:#6b7280}@media(max-width:900px){.controls,.cards,.trendGrid{grid-template-columns:1fr 1fr}}@media(max-width:560px){.hero{flex-direction:column}.controls,.cards,.trendGrid{grid-template-columns:1fr}.wrap{width:calc(100% - 18px)}}
+</style>
 </head>
 <body>
-<header class="topbar">
-  <div>
-    <div class="brand">D</div>
-    <div id="subhead" class="muted">analysis workspace</div>
-  </div>
-  <div class="top-actions">
-    <button id="importBtn" class="btn">データ取込</button>
-    <button id="pasteBtn" class="btn ghost">貼り付け</button>
-    <input id="fileInput" type="file" accept=".json,.csv,.txt" hidden>
-  </div>
-</header>
-
 <main class="wrap">
-  <section class="hero card">
-    <div>
-      <div class="eyebrow">DAILY ANALYSIS</div>
-      <h1 id="targetTitle">データを読み込んでください</h1>
-      <p id="dataStatus" class="muted">JSON / CSV / TSV に対応。ブラウザ内だけで処理します。</p>
+  <header class="hero">
+    <div><h1>データ</h1><div id="subtitle" class="muted">データを読み込んでいます…</div></div>
+    <div class="pill">データ</div>
+  </header>
+
+  <div id="loadStatus" class="panel status">最新データを読み込んでいます…</div>
+
+  <section id="mainPanel" class="panel" hidden>
+    <div class="controls">
+      <label>機種<select id="modelSel"></select></label>
+      <label>台番<select id="machineSel"></select></label>
+      <label>月<select id="monthSel"></select></label>
+      <label>グラフ<select id="modeSel"><option value="cumulative">累計差枚</option><option value="daily">日別差枚</option><option value="monthly">月別差枚</option></select></label>
     </div>
-    <div class="hero-actions">
-      <button id="runBtn" class="btn primary">編集長予想を生成</button>
-      <button id="savePredictionBtn" class="btn ghost">予想を固定保存</button>
-    </div>
+    <div id="cards" class="cards"></div>
+    <div class="chartWrap"><canvas id="chart"></canvas><div id="tooltip" class="tooltip"></div></div>
+    <div id="legend" class="legend"></div>
+    <div id="trendBox" class="trendBox"></div>
   </section>
 
-  <section class="kpis" id="kpis"></section>
-
-  <section class="grid2">
-    <div class="card">
-      <div class="section-head">
-        <div><div class="eyebrow">RANKING</div><h2>本日の候補</h2></div>
-        <select id="modelFilter" class="select"><option value="ALL">全機種</option></select>
-      </div>
-      <div id="ranking" class="ranking empty">データ待ち</div>
-    </div>
-
-    <div class="card">
-      <div class="section-head">
-        <div><div class="eyebrow">CHECK</div><h2>今日見るポイント</h2></div>
-      </div>
-      <div id="watchPoints" class="stack muted">予想生成後に表示します。</div>
-    </div>
+  <section id="tablePanel" class="panel" hidden>
+    <div class="sectionHead"><div><h2>日別データ</h2><div class="muted">新ハナビ版と同じように、台番・月を切り替えて確認できます。</div></div><div id="rowCount" class="muted"></div></div>
+    <div class="tableWrap"><table><thead><tr><th>日付</th><th>曜</th><th>機種</th><th>台番</th><th>G数</th><th>差枚</th><th>BB</th><th>RB</th><th>合算</th><th>BB確率</th><th>RB確率</th></tr></thead><tbody id="tbody"></tbody></table></div>
   </section>
 
-  <section class="card">
-    <div class="section-head">
-      <div><div class="eyebrow">DETAIL</div><h2>台別分析</h2></div>
-      <div class="toolbar">
-        <input id="machineSearch" class="input" placeholder="台番号 / 機種名">
-        <select id="sortBy" class="select">
-          <option value="score">編集長スコア</option>
-          <option value="recent">直近</option>
-          <option value="reg">REG</option>
-          <option value="drawdown">凹み</option>
-        </select>
-      </div>
-    </div>
-    <div class="table-wrap"><table id="detailTable"><thead><tr>
-      <th>順位</th><th>台</th><th>機種</th><th>スコア</th><th>前日</th><th>連続</th><th>REG</th><th>金/曜日</th><th>類似</th><th>見立て</th>
-    </tr></thead><tbody></tbody></table></div>
-  </section>
-
-  <section class="grid2">
-    <div class="card">
-      <div class="section-head"><div><div class="eyebrow">BACKTEST</div><h2>条件別の翌日成績</h2></div></div>
-      <div class="controls3">
-        <select id="backtestMachine" class="select"><option value="ALL">全台</option></select>
-        <select id="backtestCondition" class="select">
-          <option value="minus500">前日 -500枚以下</option>
-          <option value="minus1000">前日 -1000枚以下</option>
-          <option value="minus1500">前日 -1500枚以下</option>
-          <option value="reg300">前日REG 1/300以下・2000G+</option>
-          <option value="reg350">前日REG 1/350以下・2000G+</option>
-          <option value="big250">前日BIG 1/250以下・2000G+</option>
-          <option value="both">BIG1/250＋REG1/350・2000G+</option>
-          <option value="total130">合算1/130以下・2000G+</option>
-          <option value="run1000">連続マイナス累計 -1000到達</option>
-          <option value="run1500">連続マイナス累計 -1500到達</option>
-          <option value="run2000">連続マイナス累計 -2000到達</option>
-          <option value="run2500">連続マイナス累計 -2500到達</option>
-        </select>
-        <button id="backtestBtn" class="btn">集計</button>
-      </div>
-      <div id="backtestResult" class="result-box muted">条件を選択してください。</div>
-    </div>
-
-    <div class="card">
-      <div class="section-head"><div><div class="eyebrow">TRACK RECORD</div><h2>予想成績</h2></div><button id="exportHistoryBtn" class="btn ghost small">履歴出力</button></div>
-      <div id="trackRecord" class="result-box muted">固定保存した予想を翌日のデータ取込後に自動採点します。</div>
-    </div>
-  </section>
-
-  <section class="card note-card">
-    <div class="section-head">
-      <div><div class="eyebrow">NOTE DRAFT</div><h2>販売用原稿ジェネレーター</h2></div>
-      <div class="toolbar">
-        <select id="paidCount" class="select"><option value="3">有料3台</option><option value="5">有料5台</option><option value="10">有料10台</option></select>
-        <button id="generateNoteBtn" class="btn primary">原稿生成</button>
-      </div>
-    </div>
-    <div class="note-grid">
-      <div><label>タイトル候補</label><textarea id="noteTitle" rows="3"></textarea><button class="copy btn ghost small" data-copy="noteTitle">コピー</button></div>
-      <div><label>無料部分</label><textarea id="noteFree" rows="13"></textarea><button class="copy btn ghost small" data-copy="noteFree">コピー</button></div>
-      <div><label>有料部分</label><textarea id="notePaid" rows="18"></textarea><button class="copy btn ghost small" data-copy="notePaid">コピー</button></div>
-      <div><label>X告知文</label><textarea id="noteX" rows="8"></textarea><button class="copy btn ghost small" data-copy="noteX">コピー</button></div>
-    </div>
-    <div class="notice">断定表現・利益保証は自動で避け、過去データに基づく参考分析として生成します。</div>
-  </section>
-
-  <section class="card">
-    <details>
-      <summary>データ形式・設定</summary>
-      <div class="settings-grid">
-        <div><label>対象日の上位表示数</label><input id="topN" type="number" class="input" min="3" max="30" value="10"></div>
-        <div><label>類似ケース数</label><input id="similarK" type="number" class="input" min="5" max="30" value="12"></div>
-        <div><label>最低回転数（曜日主評価）</label><input id="weekdayMinGames" type="number" class="input" min="0" step="500" value="2000"></div>
-      </div>
-      <p class="muted">推奨列: date, machineNo, machine, games, diff, bb, rb。日本語見出し（日時/台番/機種/G数/差枚/BB/RB）も自動認識します。同一日・同一台は後から入ったデータを優先します。</p>
-      <button id="clearBtn" class="btn danger">保存データを消去</button>
-    </details>
+  <section id="monthlyPanel" class="panel" hidden>
+    <div class="sectionHead"><div><h2>月別集計</h2><div class="muted">保存済みデータを月×台番で集計</div></div></div>
+    <div class="tableWrap"><table><thead><tr><th>月</th><th>機種</th><th>台番</th><th>日数</th><th>総G数</th><th>総差枚</th><th>1G差枚</th><th>機械割</th><th>勝率</th><th>最大+</th><th>最大-</th></tr></thead><tbody id="monthlyBody"></tbody></table></div>
   </section>
 </main>
-
-<div id="pasteModal" class="modal hidden"><div class="modal-box">
-  <div class="section-head"><h2>データ貼り付け</h2><button id="closePaste" class="icon-btn">×</button></div>
-  <textarea id="pasteArea" rows="18" placeholder="CSV / TSV / JSON を貼り付け"></textarea>
-  <div class="modal-actions"><button id="applyPaste" class="btn primary">取り込む</button></div>
-</div></div>
-
-<div id="toast" class="toast hidden"></div>
-<script src="app.js"></script>
+<script>
+let RECORDS=[],GENERATED_AT='',points=[];
+const $=id=>document.getElementById(id),modelSel=$('modelSel'),machineSel=$('machineSel'),monthSel=$('monthSel'),modeSel=$('modeSel'),canvas=$('chart'),tooltip=$('tooltip');
+function num(v){const n=Number(v);return Number.isFinite(n)?n:0}function fmt(n){return Math.round(num(n)).toLocaleString('ja-JP')}function signed(n){n=num(n);return(n>0?'+':'')+fmt(n)}function prob(g,c){return c>0?'1/'+(g/c).toFixed(1):'-'}function shortDate(d){return String(d||'').replace(/^\d{4}-/,'').replace('-','/')}function weekday(d){return['日','月','火','水','木','金','土'][new Date(d+'T12:00:00').getDay()]||''}function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function filtered(){const mo=monthSel.value,m=modelSel.value,no=machineSel.value;return RECORDS.filter(r=>(m==='ALL'||String(r.machine)===m)&&(no==='ALL'||String(r.machineNo)===no)&&(mo==='ALL'||String(r.date).startsWith(mo)));}
+function daily(rows){const map=new Map();for(const r of rows){if(!map.has(r.date))map.set(r.date,{date:r.date,games:0,diff:0,bb:0,rb:0,rows:0});const d=map.get(r.date);d.games+=num(r.games);d.diff+=num(r.diff);d.bb+=num(r.bb);d.rb+=num(r.rb);d.rows++;}return[...map.values()].sort((a,b)=>a.date.localeCompare(b.date));}
+function extremes(ds){if(!ds.length)return null;let hi=ds[0],lo=ds[0];for(const d of ds){if(d.diff>hi.diff)hi=d;if(d.diff<lo.diff)lo=d;}return{hi,lo}}
+function streakEndingAt(ds,i){if(!ds.length||i<0)return null;const s=Math.sign(num(ds[i].diff));if(!s)return{sign:0,days:0,diff:0,start:ds[i].date,end:ds[i].date};let a=i,sum=num(ds[i].diff);while(a>0){const p=new Date(ds[a-1].date+'T12:00:00'),c=new Date(ds[a].date+'T12:00:00');if((c-p)/86400000!==1||Math.sign(num(ds[a-1].diff))!==s)break;a--;sum+=num(ds[a].diff)}return{sign:s,days:i-a+1,diff:sum,start:ds[a].date,end:ds[i].date}}
+function renderCards(ds){const games=ds.reduce((a,d)=>a+d.games,0),diff=ds.reduce((a,d)=>a+d.diff,0),bb=ds.reduce((a,d)=>a+d.bb,0),rb=ds.reduce((a,d)=>a+d.rb,0),wins=ds.filter(d=>d.diff>0).length,payout=games?(1+diff/(games*3))*100:0;const total=bb+rb;const ex=extremes(ds);$('cards').innerHTML=[['総G数',fmt(games)+'G',''],['総差枚',signed(diff)+'枚',diff>=0?'blue':'red'],['機械割',games?payout.toFixed(2)+'%':'-',''],['勝率',ds.length?(wins/ds.length*100).toFixed(1)+'%':'-',''],['BB',fmt(bb)+'回',''],['RB',fmt(rb)+'回',''],['合算',prob(games,total),''],['最大差枚',ex?signed(ex.hi.diff)+'枚 '+shortDate(ex.hi.date):'-','blue']].map(x=>'<div class="card"><div class="k">'+x[0]+'</div><div class="v '+x[2]+'">'+x[1]+'</div></div>').join('')}
+function renderTrend(ds){const box=$('trendBox');if(!ds.length){box.innerHTML='';return}const c=streakEndingAt(ds,ds.length-1);if(!c||!c.sign){box.innerHTML='<div class="tiny">最新日は差枚0枚のため連続傾向なし。</div>';return}const same=[];for(let i=0;i<ds.length-1;i++){const x=streakEndingAt(ds,i);if(!x||x.sign!==c.sign||x.days!==c.days)continue;const a=new Date(ds[i].date+'T12:00:00'),b=new Date(ds[i+1].date+'T12:00:00');if((b-a)/86400000!==1)continue;same.push(ds[i+1]);}const plus=same.filter(x=>x.diff>0).length,avg=same.length?same.reduce((a,x)=>a+x.diff,0)/same.length:0;box.innerHTML='<div style="font-weight:800;margin-bottom:10px">現在：<span class="'+(c.sign>0?'blue':'red')+'">'+c.days+'日連続'+(c.sign>0?'上昇':'下降')+' '+signed(c.diff)+'枚</span></div><div class="trendGrid"><div class="trendCard"><div class="k">過去の同条件</div><div class="v">'+(same.length?same.length+'回':'-')+'</div></div><div class="trendCard"><div class="k">翌日プラス率</div><div class="v">'+(same.length?(plus/same.length*100).toFixed(1)+'%':'-')+'</div></div><div class="trendCard"><div class="k">翌日平均差枚</div><div class="v '+(avg>=0?'blue':'red')+'">'+(same.length?signed(avg)+'枚':'-')+'</div></div><div class="trendCard"><div class="k">期間</div><div class="v" style="font-size:13px">'+shortDate(c.start)+'〜'+shortDate(c.end)+'</div></div></div><div class="tiny" style="margin-top:9px">過去実績であり、次回の結果を保証するものではありません。</div>'}
+function series(ds){const mode=modeSel.value;if(mode==='monthly'){const m=new Map();for(const d of ds)m.set(d.date.slice(0,7),(m.get(d.date.slice(0,7))||0)+d.diff);return[...m].sort().map(([label,value])=>({label,value,diff:value,date:label}))}if(mode==='daily')return ds.map(d=>({label:shortDate(d.date),value:d.diff,diff:d.diff,date:d.date}));let sum=0;return ds.map(d=>{sum+=d.diff;return{label:shortDate(d.date),value:sum,diff:d.diff,date:d.date}})}
+function draw(ds){const data=series(ds),rect=canvas.getBoundingClientRect(),W=Math.max(320,Math.floor(rect.width||1000)),H=430,dpr=Math.max(1,devicePixelRatio||1);canvas.width=W*dpr;canvas.height=H*dpr;const c=canvas.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);c.clearRect(0,0,W,H);points=[];if(!data.length){c.fillStyle='#6b7280';c.font='14px system-ui';c.fillText('データなし',24,40);$('legend').textContent='';return}const p={l:68,r:24,t:24,b:48},w=W-p.l-p.r,h=H-p.t-p.b;let min=Math.min(0,...data.map(d=>d.value)),max=Math.max(0,...data.map(d=>d.value));if(max===min){max+=100;min-=100}const range=max-min||1,x=i=>p.l+(data.length===1?w/2:i*w/(data.length-1)),y=v=>p.t+(max-v)*h/range;c.strokeStyle='#e4e8ee';c.fillStyle='#6b7280';c.font='12px system-ui';for(let i=0;i<=4;i++){const val=max-range*i/4,yy=p.t+h*i/4;c.beginPath();c.moveTo(p.l,yy);c.lineTo(p.l+w,yy);c.stroke();c.textAlign='right';c.textBaseline='middle';c.fillText(Math.round(val).toLocaleString('ja-JP'),p.l-8,yy)}if(min<0&&max>0){c.strokeStyle='#9aa0a6';c.beginPath();c.moveTo(p.l,y(0));c.lineTo(p.l+w,y(0));c.stroke()}if(modeSel.value==='daily'){const bw=Math.max(2,Math.min(14,w/Math.max(1,data.length)*.72)),y0=y(0);data.forEach((d,i)=>{const yy=y(d.value);c.fillStyle=d.value>=0?'#1a73e8':'#d93025';c.fillRect(x(i)-bw/2,Math.min(yy,y0),bw,Math.max(1,Math.abs(y0-yy)))})}else{for(let i=1;i<data.length;i++){c.strokeStyle=data[i].diff>=0?'#1a73e8':'#d93025';c.lineWidth=2.5;c.beginPath();c.moveTo(x(i-1),y(data[i-1].value));c.lineTo(x(i),y(data[i].value));c.stroke()}data.forEach((d,i)=>{c.beginPath();c.fillStyle=d.diff>=0?'#1a73e8':'#d93025';c.arc(x(i),y(d.value),4,0,Math.PI*2);c.fill();c.strokeStyle='#fff';c.stroke()})}const maxLabels=Math.min(6,Math.max(2,Math.floor(w/150))),step=Math.max(1,Math.ceil((data.length-1)/Math.max(1,maxLabels-1)));c.fillStyle='#6b7280';c.font='11px system-ui';c.textAlign='center';c.textBaseline='top';data.forEach((d,i)=>{if(i%step===0||i===data.length-1)c.fillText(d.label,x(i),p.t+h+10)});points=data.map((d,i)=>({x:x(i),y:y(d.value),d}));const ex=extremes(ds);$('legend').innerHTML=ex?'<span class="blue">最大差枚 '+signed(ex.hi.diff)+'枚 '+shortDate(ex.hi.date)+'</span> / <span class="red">最大マイナス '+signed(ex.lo.diff)+'枚 '+shortDate(ex.lo.date)+'</span>':''}
+function renderTable(rows){const sorted=rows.slice().sort((a,b)=>String(b.date).localeCompare(String(a.date))||Number(a.machineNo)-Number(b.machineNo));$('rowCount').textContent=sorted.length.toLocaleString('ja-JP')+'件';$('tbody').innerHTML=sorted.map(r=>{const g=num(r.games),bb=num(r.bb),rb=num(r.rb);return'<tr><td>'+esc(r.date)+'</td><td>'+weekday(r.date)+'</td><td>'+esc(r.machine||'')+'</td><td>'+esc(r.machineNo)+'</td><td>'+fmt(g)+'</td><td class="'+(num(r.diff)>=0?'blue':'red')+'">'+signed(r.diff)+'</td><td>'+bb+'</td><td>'+rb+'</td><td>'+prob(g,bb+rb)+'</td><td>'+prob(g,bb)+'</td><td>'+prob(g,rb)+'</td></tr>'}).join('')}
+function renderMonthly(){const map=new Map();for(const r of RECORDS){const key=[String(r.date).slice(0,7),String(r.machine||''),String(r.machineNo)].join('|');if(!map.has(key))map.set(key,{month:String(r.date).slice(0,7),machine:String(r.machine||''),no:String(r.machineNo),days:0,games:0,diff:0,wins:0,max: -Infinity,min: Infinity});const x=map.get(key);x.days++;x.games+=num(r.games);x.diff+=num(r.diff);x.wins+=num(r.diff)>0?1:0;x.max=Math.max(x.max,num(r.diff));x.min=Math.min(x.min,num(r.diff))}const rows=[...map.values()].sort((a,b)=>b.month.localeCompare(a.month)||Number(a.no)-Number(b.no));$('monthlyBody').innerHTML=rows.map(x=>'<tr><td>'+x.month+'</td><td>'+esc(x.machine)+'</td><td>'+x.no+'</td><td>'+x.days+'</td><td>'+fmt(x.games)+'</td><td class="'+(x.diff>=0?'blue':'red')+'">'+signed(x.diff)+'</td><td>'+(x.games?(x.diff/x.games).toFixed(3):'-')+'</td><td>'+(x.games?((1+x.diff/(x.games*3))*100).toFixed(2)+'%':'-')+'</td><td>'+(x.days?(x.wins/x.days*100).toFixed(1)+'%':'-')+'</td><td class="blue">'+signed(x.max)+'</td><td class="red">'+signed(x.min)+'</td></tr>').join('')}
+function refreshMachines(){const model=modelSel.value;const rows=RECORDS.filter(r=>model==='ALL'||String(r.machine)===model),current=machineSel.value;const nos=[...new Set(rows.map(r=>String(r.machineNo)))].sort((a,b)=>Number(a)-Number(b));machineSel.innerHTML='<option value="ALL">全台合計</option>'+nos.map(n=>'<option value="'+esc(n)+'">台番 '+esc(n)+'</option>').join('');if(nos.includes(current))machineSel.value=current}
+function render(){const rows=filtered(),ds=daily(rows);renderCards(ds);draw(ds);renderTrend(ds);renderTable(rows)}
+function setup(){const models=[...new Set(RECORDS.map(r=>String(r.machine||'')).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'ja'));modelSel.innerHTML='<option value="ALL">全機種</option>'+models.map(m=>'<option value="'+esc(m)+'">'+esc(m)+'</option>').join('');refreshMachines();const months=[...new Set(RECORDS.map(r=>String(r.date).slice(0,7)))].sort().reverse();monthSel.innerHTML='<option value="ALL">全期間</option>'+months.map(m=>'<option value="'+m+'">'+m.replace('-','年')+'月</option>').join('');$('subtitle').textContent='保存データ '+RECORDS.length.toLocaleString('ja-JP')+'行 / '+new Set(RECORDS.map(r=>String(r.machineNo))).size+'台 / '+models.length+'機種 / 最終更新 '+(GENERATED_AT?new Date(GENERATED_AT).toLocaleString('ja-JP'):'-');$('loadStatus').hidden=true;$('mainPanel').hidden=false;$('tablePanel').hidden=false;$('monthlyPanel').hidden=false;renderMonthly();render()}
+modelSel.addEventListener('change',()=>{refreshMachines();render()});[machineSel,monthSel,modeSel].forEach(x=>x.addEventListener('change',render));window.addEventListener('resize',()=>RECORDS.length&&render());canvas.addEventListener('mousemove',e=>{if(!points.length)return;const r=canvas.getBoundingClientRect(),mx=e.clientX-r.left,my=e.clientY-r.top;let best=null,dist=1e9;for(const p of points){const d=(p.x-mx)**2+(p.y-my)**2;if(d<dist){dist=d;best=p}}if(best&&dist<225){tooltip.style.display='block';tooltip.style.left=Math.min(r.width-180,best.x+12)+'px';tooltip.style.top=Math.max(6,best.y-72)+'px';tooltip.innerHTML=esc(best.d.date||best.d.label)+'<br>日別差枚 '+signed(best.d.diff)+'枚<br>'+(modeSel.value==='cumulative'?'累計差枚 '+signed(best.d.value)+'枚':'差枚 '+signed(best.d.value)+'枚')}else tooltip.style.display='none'});canvas.addEventListener('mouseleave',()=>tooltip.style.display='none');
+(async()=>{try{const res=await fetch('./data.json?ts='+Date.now(),{cache:'no-store'});if(!res.ok)throw new Error('data.json '+res.status);const data=await res.json();RECORDS=(Array.isArray(data.records)?data.records:[]).filter(r=>r&&r.date&&r.machineNo&&String(r.machine||'').includes('ジャグラー'));GENERATED_AT=data.generatedAt||'';if(!RECORDS.length)throw new Error('公開データがまだありません。');setup()}catch(e){const box=$('loadStatus');box.classList.add('error');box.innerHTML='公開データを読み込めませんでした。<br>'+esc(e.message||e)}})();
+</script>
 </body>
 </html>
