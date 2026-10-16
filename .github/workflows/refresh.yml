@@ -1,55 +1,10 @@
-name: Refresh data
+name: Browser collector mode
 on:
-  schedule:
-    - cron: '20 22 * * *'
   workflow_dispatch:
-    inputs:
-      lookback_days:
-        description: 'Days to refresh'
-        required: false
-        default: '30'
-  push:
-    paths:
-      - 'refresh.trigger'
 permissions:
-  contents: write
+  contents: read
 jobs:
-  refresh:
+  info:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - name: Install parser
-        run: pip install --disable-pip-version-check requests beautifulsoup4
-      - name: Choose range
-        id: range
-        shell: bash
-        run: |
-          if [ "${{ github.event_name }}" = "schedule" ]; then
-            echo "days=4" >> "$GITHUB_OUTPUT"
-          elif [ "${{ github.event_name }}" = "push" ]; then
-            echo "days=7" >> "$GITHUB_OUTPUT"
-          else
-            DAYS="${{ inputs.lookback_days }}"
-            if [ -z "$DAYS" ]; then DAYS=30; fi
-            if [ "$DAYS" -gt 180 ]; then DAYS=180; fi
-            echo "days=$DAYS" >> "$GITHUB_OUTPUT"
-          fi
-      - name: Refresh
-        run: python collector.py --days "${{ steps.range.outputs.days }}"
-      - name: Commit data if changed
-        shell: bash
-        run: |
-          if git diff --quiet -- data.json; then
-            echo "No data changes"
-            exit 0
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data.json
-          git commit -m "Refresh data"
-          git pull --rebase origin main
-          git push
+      - run: echo "Data is collected from the normal Chrome tab by the extension, matching the Shin Hanabi workflow."
