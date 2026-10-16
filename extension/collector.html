@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>D Collector</title>
+<style>
+:root{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Yu Gothic",Meiryo,sans-serif;color:#202124;background:#f5f6f8}*{box-sizing:border-box}body{margin:0;background:#f5f6f8}.wrap{width:min(1180px,calc(100% - 28px));margin:24px auto 70px}.hero{display:flex;justify-content:space-between;gap:18px;align-items:flex-start}.hero h1{margin:0 0 6px;font-size:32px}.hero p{margin:0;color:#667085}.pill{padding:7px 12px;border-radius:999px;background:#e8f0fe;color:#174ea6;font-weight:800}.panel{background:#fff;border:1px solid #e2e5e9;border-radius:14px;padding:18px;margin-top:15px;box-shadow:0 3px 14px rgba(0,0,0,.035)}h2{margin:0;font-size:19px}.section-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap}.sub,.muted,small{color:#6b7280;font-size:12px}.manual-first{display:flex;justify-content:space-between;gap:14px;align-items:center;padding:14px;border:1px solid #cfe0ff;background:#f6f9ff;border-radius:12px;margin-top:14px}.manual-first strong{display:block;margin-bottom:4px}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:14px}label{font-size:12px;font-weight:800;color:#4b5563;display:flex;flex-direction:column;gap:6px}input,select{width:100%;border:1px solid #cfd4dc;border-radius:9px;padding:10px 11px;background:#fff;font:inherit}label.check{flex-direction:row;align-items:center;gap:8px;padding-top:25px}label.check input{width:auto}.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}button{border:1px solid #cbd2dc;background:#fff;color:#202124;border-radius:9px;padding:10px 13px;font:inherit;font-weight:800;cursor:pointer}button.primary{background:#1a73e8;border-color:#1a73e8;color:#fff}button.accent{background:#6b3fa0;border-color:#6b3fa0;color:#fff}button.danger{background:#fff0ef;border-color:#efb8b3;color:#a61b14}.progress{height:10px;background:#edf0f3;border-radius:999px;overflow:hidden;margin-top:8px}.progress>div{height:100%;width:0;background:#1a73e8;transition:.2s}.progress-head{display:flex;justify-content:space-between;font-size:12px;color:#667085;margin-top:14px}.notice{margin-top:10px;padding:10px 12px;border-radius:10px;background:#f7f9fc;color:#4b5563;white-space:pre-wrap}.summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:14px}.card{border:1px solid #e1e5eb;border-radius:12px;padding:13px;background:#fafbfc}.card .k{font-size:12px;color:#6b7280}.card .v{font-size:19px;font-weight:900;margin-top:5px}.blue{color:#1a73e8}.red{color:#d93025}.table-scroll{overflow:auto;margin-top:12px;border:1px solid #e1e5eb;border-radius:10px}table{width:100%;min-width:1050px;border-collapse:collapse}th,td{padding:8px 10px;border-bottom:1px solid #edf0f3;text-align:right;white-space:nowrap;font-size:12px}th{background:#f7f8fa;color:#4b5563;position:sticky;top:0}th:nth-child(1),td:nth-child(1),th:nth-child(3),td:nth-child(3){text-align:left}.publish-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.ok{color:#0f7b3e}.warn{color:#9a5b00}.chartWrap{border:1px solid #e1e5eb;border-radius:12px;overflow:hidden;margin-top:14px}.chartWrap canvas{display:block;width:100%;height:380px}.inline{display:flex;gap:8px;flex-wrap:wrap}.inline select{width:auto;min-width:150px}@media(max-width:900px){.grid,.summary,.publish-grid{grid-template-columns:1fr 1fr}}@media(max-width:560px){.hero,.manual-first{flex-direction:column;align-items:flex-start}.grid,.summary,.publish-grid{grid-template-columns:1fr}.wrap{width:calc(100% - 18px)}}
+</style>
+</head>
+<body>
+<main class="wrap">
+<header class="hero"><div><h1>D Collector</h1><p>新ハナビ版と同じ流れで、日別ページを1日ずつ開いてジャグラー全機種を保存します。</p></div><div class="pill">v2.0</div></header>
+
+<section class="panel">
+  <div class="section-head"><div><h2>データ取得</h2><div class="sub">手動保存を基本にし、自動は補助扱い。実HTMLのジャグラー行だけを読み取ります。</div></div><span id="availableInfo" class="muted">取得可能日 未確認</span></div>
+  <div class="manual-first"><div><strong>推奨運用：手動モード</strong><div class="sub">店舗一覧で日付を自分で押す → 日別ページが正常表示 → ジャグラー全機種を自動保存 → 一覧へ戻る、の流れです。</div></div><div class="btn-row" style="margin:0"><button id="openListManual">アナスロタブを選ぶ</button><span id="manualStatus" class="muted">手動モード ON</span></div></div>
+
+  <div class="grid">
+    <label>開始日<input id="startDate" type="date"></label>
+    <label>終了日<input id="endDate" type="date"></label>
+    <label>日付ページ滞在（秒）<input id="detailDwell" type="number" min="10" max="300" step="10" value="60"></label>
+    <label>一覧ページ滞在（秒）<input id="listDwell" type="number" min="10" max="300" step="10" value="60"></label>
+    <label>次の日まで追加待機（秒）<input id="interval" type="number" min="60" max="600" step="30" value="180"></label>
+    <label>自動休憩する件数<input id="breakEvery" type="number" min="2" max="100" value="2"></label>
+    <label>自動休憩（秒）<input id="breakSeconds" type="number" min="300" max="7200" step="300" value="3600"></label>
+    <label>1回の最大処理日数<input id="maxPerRun" type="number" min="1" max="10" value="2"></label>
+    <label class="check"><input id="skipDone" type="checkbox" checked><span>取得済みの日付はスキップ</span></label>
+    <label class="check"><input id="manualMode" type="checkbox" checked><span>手動モード</span></label>
+    <label class="check"><input id="continueAfterRestricted" type="checkbox"><span>制限日を記録して続行</span></label>
+    <label>制限後クールダウン（分）<input id="cooldown" type="number" min="1" max="360" value="60"></label>
+  </div>
+  <div class="btn-row"><button id="set90">直近90日</button><button id="scanAvailable">取得可能期間を確認</button><button id="collectRange" class="primary">補助自動：指定期間</button><button id="stop" class="danger" disabled>■ ストップ</button><button id="captureCurrent">今開いている日別ページを保存</button></div>
+  <div class="progress-head"><span id="status">待機中</span><span id="progressText">0 / 0</span></div><div class="progress"><div id="progressBar"></div></div><div id="notice" class="notice">アナスロの店舗一覧または日別ページを通常のChromeタブで開いてください。</div>
+</section>
+
+<section class="panel"><div class="section-head"><div><h2>指定期間集計</h2><div id="summaryRangeInfo" class="sub">保存データ全体</div></div><span id="recordCount" class="muted">0件</span></div><div id="summaryCards" class="summary"></div></section>
+
+<section class="panel"><div class="section-head"><div><h2>差枚グラフ</h2><div class="sub">機種・台番・月・グラフ種類を選択</div></div><div class="inline"><select id="chartModel"></select><select id="chartMachine"></select><select id="chartMonth"></select><select id="chartMode"><option value="cumulative">累計差枚</option><option value="daily">日別差枚</option><option value="monthly">月別差枚</option></select></div></div><div class="chartWrap"><canvas id="chartCanvas"></canvas></div><div id="chartLegend" class="muted" style="margin-top:8px"></div></section>
+
+<section class="panel">
+  <div class="section-head"><div><h2>Web公開（同じURLで最新版）</h2><div class="sub">保存後に data.json を更新。公開URLは変わりません。</div></div><span id="publishStatus" class="muted">未確認</span></div>
+  <div class="grid publish-grid"><label>Repository<input id="repo" value="k4yxf8bcrk-ui/pokepoke1"></label><label>Branch<input id="branch" value="main"></label><label class="check"><input id="publishAuto" type="checkbox"><span>新しいデータ保存後に自動公開</span></label></div>
+  <div class="btn-row"><button id="pullGithub">GitHubの既存データを読み込む</button><button id="publishNow" class="primary">今すぐ最新版を公開</button><button id="publishOpen">公開ページを開く</button><button id="openOptions">GitHubトークン設定</button></div>
+  <div class="sub" style="margin-top:8px">トークンはこのPCの拡張機能内だけに保存します。</div>
+</section>
+
+<section class="panel"><div class="section-head"><div><h2>日ごとのジャグラーデータ</h2><div class="sub">保存データはすべて残ります。</div></div><div class="btn-row" style="margin:0"><button id="exportJson">バックアップJSON</button><button id="clearLocal" class="danger">ローカル保存を削除</button></div></div><div class="table-scroll"><table><thead><tr><th>日付</th><th>曜</th><th>機種</th><th>台番</th><th>G数</th><th>差枚</th><th>BB</th><th>RB</th><th>合算</th><th>BB確率</th><th>RB確率</th></tr></thead><tbody id="dataBody"></tbody></table></div><div id="empty" class="muted" style="margin-top:10px">まだデータはありません。</div></section>
+
+<section class="panel"><h2>取得ルール</h2><ol class="sub" style="line-height:1.8"><li>表示済みDOMの実データ行だけを読みます。</li><li>先頭セルがジャグラー機種名の表、またはジャグラー見出し直下の表だけを対象にします。</li><li>403 / 429 / CAPTCHA / Cloudflare等で実データがない場合は保存しません。</li><li>補助自動は最大10日。制限回避の自動操作はしません。</li><li>同じ日・同じ台は新しい保存内容を優先します。</li></ol></section>
+</main>
+<script src="collector.js"></script>
+</body>
+</html>
