@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "D Collector",
+  "version": "1.0.0",
+  "description": "表示中の公開データを読み取り、D の data.json に同期します。",
+  "permissions": ["storage", "tabs"],
+  "host_permissions": [
+    "https://ana-slo.com/*",
+    "https://www.ana-slo.com/*",
+    "https://api.github.com/*"
+  ],
+  "background": {
+    "service_worker": "service-worker.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "D Collector"
+  },
+  "options_page": "options.html",
+  "content_scripts": [
+    {
+      "matches": ["https://ana-slo.com/*", "https://www.ana-slo.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
