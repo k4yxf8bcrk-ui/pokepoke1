@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex">
+<title>X投稿用 月まとめ</title>
+<style>
+:root{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Yu Gothic",Meiryo,sans-serif;color:#202124;background:#f5f6f8}*{box-sizing:border-box}body{margin:0;background:#f5f6f8}.wrap{width:min(980px,calc(100% - 28px));margin:24px auto 60px}.hero{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}.hero h1{margin:0 0 6px;font-size:30px}.muted{color:#6b7280;font-size:13px}.panel{background:#fff;border:1px solid #e2e5e9;border-radius:14px;padding:18px;margin-top:15px;box-shadow:0 3px 14px rgba(0,0,0,.035)}.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:end}.controls label{font-size:12px;font-weight:800;color:#4b5563;display:flex;flex-direction:column;gap:6px;min-width:190px}select,button,textarea{font:inherit}select{border:1px solid #cfd4dc;border-radius:9px;padding:10px 11px;background:#fff}button{border:1px solid #cbd2dc;background:#fff;border-radius:9px;padding:10px 13px;font-weight:800;cursor:pointer}.primary{background:#111827;color:#fff;border-color:#111827}.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:15px}.card{border:1px solid #e1e5eb;border-radius:12px;padding:13px;background:#fafbfc}.card .k{font-size:12px;color:#6b7280}.card .v{font-size:18px;font-weight:900;margin-top:5px}.blue{color:#1a73e8}.red{color:#d93025}textarea{width:100%;min-height:240px;resize:vertical;border:1px solid #cfd4dc;border-radius:10px;padding:13px;line-height:1.65;background:#fbfcfe;margin-top:12px}.foot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:8px}.ok{color:#0f7b3e;font-weight:800}.tableWrap{overflow:auto;margin-top:12px;border:1px solid #e1e5eb;border-radius:10px}table{width:100%;min-width:650px;border-collapse:collapse}th,td{padding:8px 10px;border-bottom:1px solid #edf0f3;text-align:right;white-space:nowrap;font-size:13px}th{background:#f7f8fa;color:#4b5563}th:first-child,td:first-child{text-align:left}.status{padding:14px;border-radius:10px;background:#f7f9fc;color:#4b5563}.error{background:#fff0ef;color:#a61b14;border:1px solid #f0c1bd}.nav{display:inline-block;margin-top:8px;color:#1a73e8;text-decoration:none;font-weight:800}@media(max-width:760px){.cards{grid-template-columns:1fr 1fr}.hero{flex-direction:column}}@media(max-width:480px){.cards{grid-template-columns:1fr}.wrap{width:calc(100% - 18px)}}
+</style>
+</head>
+<body>
+<main class="wrap">
+<header class="hero"><div><h1>X投稿用 月まとめ</h1><div class="muted">公開済みのジャグラーデータから、月ごとのX投稿文を自動作成します。</div><a class="nav" href="./">← データ画面へ戻る</a></div></header>
+<div id="status" class="panel status">公開データを読み込んでいます…</div>
+<section id="main" hidden>
+  <div class="panel">
+    <div class="controls">
+      <label>月<select id="monthSel"></select></label>
+      <button id="copyBtn" class="primary">X用テキストをコピー</button>
+      <button id="openXBtn">X投稿画面を開く</button>
+    </div>
+    <div id="cards" class="cards"></div>
+  </div>
+  <div class="panel">
+    <div style="font-weight:900;font-size:18px">X投稿用テキスト</div>
+    <div class="muted">長くなりすぎないよう、差枚上位の機種から入れます。</div>
+    <textarea id="xText" readonly></textarea>
+    <div class="foot"><span id="charCount" class="muted"></span><span id="copyStatus" class="ok"></span></div>
+  </div>
+  <div class="panel">
+    <div style="font-weight:900;font-size:18px">機種別 月間データ</div>
+    <div class="tableWrap"><table><thead><tr><th>機種</th><th>台数</th><th>総G数</th><th>総差枚</th><th>機械割</th><th>プラス率</th></tr></thead><tbody id="modelBody"></tbody></table></div>
+  </div>
+</section>
+</main>
+<script>
+let RECORDS=[];
+const $=id=>document.getElementById(id);
+function num(v){const n=Number(v);return Number.isFinite(n)?n:0}
+function fmt(n){return Math.round(num(n)).toLocaleString('ja-JP')}
+function signed(n){n=num(n);return(n>0?'+':'')+fmt(n)}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function monthLabel(m){const [y,mo]=String(m).split('-');return `${y}年${Number(mo)}月`}
+function monthRows(){const m=$('monthSel').value;return RECORDS.filter(r=>String(r.date||'').startsWith(m))}
+function summarize(rows){
+  const games=rows.reduce((a,r)=>a+num(r.games),0),diff=rows.reduce((a,r)=>a+num(r.diff),0),bb=rows.reduce((a,r)=>a+num(r.bb),0),rb=rows.reduce((a,r)=>a+num(r.rb),0);
+  const payout=games?(1+diff/(games*3))*100:0;
+  const plus=rows.filter(r=>num(r.diff)>0).length;
+  const machines=new Set(rows.map(r=>String(r.machineNo))).size;
+  const models=new Set(rows.map(r=>String(r.machine||''))).size;
+  const days=new Set(rows.map(r=>String(r.date))).size;
+  return{games,diff,bb,rb,payout,plusRate:rows.length?plus/rows.length*100:0,machines,models,days,rows:rows.length};
+}
+function modelSummary(rows){
+  const map=new Map();
+  for(const r of rows){const k=String(r.machine||'不明');if(!map.has(k))map.set(k,{machine:k,games:0,diff:0,plus:0,rows:0,nos:new Set()});const x=map.get(k);x.games+=num(r.games);x.diff+=num(r.diff);x.plus+=num(r.diff)>0?1:0;x.rows++;x.nos.add(String(r.machineNo));}
+  return[...map.values()].map(x=>({...x,machines:x.nos.size,payout:x.games?(1+x.diff/(x.games*3))*100:0,plusRate:x.rows?x.plus/x.rows*100:0})).sort((a,b)=>b.diff-a.diff);
+}
+function buildXText(month,rows){
+  const s=summarize(rows),models=modelSummary(rows);
+  const lines=[
+    `${monthLabel(month)} ジャグラー月間データ`,
+    `総G ${fmt(s.games)}G / 総差枚 ${signed(s.diff)}枚`,
+    `機械割 ${s.games?s.payout.toFixed(2)+'%':'-'} / プラス率 ${s.plusRate.toFixed(1)}%`,
+    `対象 ${s.machines}台・${s.models}機種・${s.days}日`
+  ];
+  if(models.length)lines.push('機種別差枚');
+  for(const m of models){
+    const line=`${m.machine} ${signed(m.diff)}枚`;
+    const candidate=[...lines,line].join('\n');
+    if(candidate.length>255)break;
+    lines.push(line);
+  }
+  if(lines.length<5&&models.length)lines.push(`${models.length}機種集計`);
+  return lines.join('\n');
+}
+function render(){
+  const month=$('monthSel').value,rows=monthRows(),s=summarize(rows),models=modelSummary(rows);
+  $('cards').innerHTML=[['総G数',fmt(s.games)+'G',''],['総差枚',signed(s.diff)+'枚',s.diff>=0?'blue':'red'],['機械割',s.games?s.payout.toFixed(2)+'%':'-',''],['プラス率',s.plusRate.toFixed(1)+'%',''],['対象台数',s.machines+'台',''],['機種数',s.models+'機種',''],['記録日数',s.days+'日',''],['記録行数',s.rows+'件','']].map(x=>`<div class="card"><div class="k">${x[0]}</div><div class="v ${x[2]}">${x[1]}</div></div>`).join('');
+  $('modelBody').innerHTML=models.map(x=>`<tr><td>${esc(x.machine)}</td><td>${x.machines}</td><td>${fmt(x.games)}</td><td class="${x.diff>=0?'blue':'red'}">${signed(x.diff)}</td><td>${x.games?x.payout.toFixed(2)+'%':'-'}</td><td>${x.plusRate.toFixed(1)}%</td></tr>`).join('');
+  const text=buildXText(month,rows);$('xText').value=text;$('charCount').textContent=`${text.length}文字`;$('copyStatus').textContent='';
+  const u=new URL(location.href);u.searchParams.set('month',month);history.replaceState(null,'',u);
+}
+$('copyBtn').addEventListener('click',async()=>{try{await navigator.clipboard.writeText($('xText').value);$('copyStatus').textContent='コピーしました';}catch(_){$('xText').select();document.execCommand('copy');$('copyStatus').textContent='コピーしました';}});
+$('openXBtn').addEventListener('click',()=>{const text=$('xText').value;window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(text),'_blank','noopener');});
+$('monthSel').addEventListener('change',render);
+(async()=>{try{const res=await fetch('./data.json?ts='+Date.now(),{cache:'no-store'});if(!res.ok)throw new Error('data.json '+res.status);const data=await res.json();RECORDS=(Array.isArray(data.records)?data.records:[]).filter(r=>r&&r.date&&r.machineNo&&String(r.machine||'').includes('ジャグラー'));if(!RECORDS.length)throw new Error('公開データがまだありません。');const months=[...new Set(RECORDS.map(r=>String(r.date).slice(0,7)))].sort().reverse();$('monthSel').innerHTML=months.map(m=>`<option value="${m}">${monthLabel(m)}</option>`).join('');const q=new URLSearchParams(location.search).get('month');if(q&&months.includes(q))$('monthSel').value=q;$('status').hidden=true;$('main').hidden=false;render();}catch(e){const box=$('status');box.classList.add('error');box.innerHTML='公開データを読み込めませんでした。<br>'+esc(e.message||e)}})();
+</script>
+</body>
+</html>
