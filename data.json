@@ -1,9 +1,586 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-17T14:52:00.282Z",
-  "latestDate": null,
-  "recordCount": 0,
-  "machineCount": 0,
-  "modelCount": 0,
-  "records": []
+  "generatedAt": "2026-10-17T14:53:20.466Z",
+  "latestDate": "2026-01-18",
+  "recordCount": 64,
+  "machineCount": 64,
+  "modelCount": 6,
+  "records": [
+    {
+      "date": "2026-01-18",
+      "machineNo": "3101",
+      "machine": "マイジャグラーV",
+      "games": 7920,
+      "diff": 4429,
+      "bb": 41,
+      "rb": 37
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3102",
+      "machine": "マイジャグラーV",
+      "games": 9025,
+      "diff": 3338,
+      "bb": 41,
+      "rb": 37
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3103",
+      "machine": "マイジャグラーV",
+      "games": 9973,
+      "diff": 3759,
+      "bb": 43,
+      "rb": 45
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3105",
+      "machine": "マイジャグラーV",
+      "games": 9531,
+      "diff": 1721,
+      "bb": 37,
+      "rb": 40
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3106",
+      "machine": "マイジャグラーV",
+      "games": 9369,
+      "diff": 5579,
+      "bb": 44,
+      "rb": 52
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3107",
+      "machine": "マイジャグラーV",
+      "games": 9811,
+      "diff": 224,
+      "bb": 32,
+      "rb": 43
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3108",
+      "machine": "マイジャグラーV",
+      "games": 9439,
+      "diff": 5250,
+      "bb": 49,
+      "rb": 37
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3110",
+      "machine": "ネオアイムジャグラーEX",
+      "games": 7883,
+      "diff": 609,
+      "bb": 34,
+      "rb": 16
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3111",
+      "machine": "ネオアイムジャグラーEX",
+      "games": 7167,
+      "diff": 1968,
+      "bb": 34,
+      "rb": 20
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3112",
+      "machine": "ネオアイムジャグラーEX",
+      "games": 9125,
+      "diff": 1068,
+      "bb": 33,
+      "rb": 36
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3113",
+      "machine": "ネオアイムジャグラーEX",
+      "games": 5075,
+      "diff": -1862,
+      "bb": 15,
+      "rb": 7
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3115",
+      "machine": "ネオアイムジャグラーEX",
+      "games": 8732,
+      "diff": 2812,
+      "bb": 42,
+      "rb": 28
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3116",
+      "machine": "ネオアイムジャグラーEX",
+      "games": 9043,
+      "diff": 3485,
+      "bb": 41,
+      "rb": 35
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3117",
+      "machine": "ネオアイムジャグラーEX",
+      "games": 6587,
+      "diff": 359,
+      "bb": 22,
+      "rb": 25
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3118",
+      "machine": "ネオアイムジャグラーEX",
+      "games": 8648,
+      "diff": -821,
+      "bb": 23,
+      "rb": 32
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3120",
+      "machine": "ネオアイムジャグラーEX",
+      "games": 4948,
+      "diff": -1315,
+      "bb": 13,
+      "rb": 10
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3121",
+      "machine": "ネオアイムジャグラーEX",
+      "games": 8192,
+      "diff": -488,
+      "bb": 27,
+      "rb": 31
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3122",
+      "machine": "ネオアイムジャグラーEX",
+      "games": 5147,
+      "diff": -1226,
+      "bb": 15,
+      "rb": 11
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3123",
+      "machine": "アイムジャグラーEX-TP",
+      "games": 5766,
+      "diff": -538,
+      "bb": 18,
+      "rb": 18
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3125",
+      "machine": "アイムジャグラーEX-TP",
+      "games": 8669,
+      "diff": 185,
+      "bb": 32,
+      "rb": 29
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3126",
+      "machine": "アイムジャグラーEX-TP",
+      "games": 8772,
+      "diff": 1244,
+      "bb": 35,
+      "rb": 28
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3127",
+      "machine": "アイムジャグラーEX-TP",
+      "games": 7356,
+      "diff": -300,
+      "bb": 25,
+      "rb": 20
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3128",
+      "machine": "ネオアイムジャグラーEX",
+      "games": 8624,
+      "diff": 856,
+      "bb": 34,
+      "rb": 26
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3130",
+      "machine": "ネオアイムジャグラーEX",
+      "games": 7785,
+      "diff": 553,
+      "bb": 33,
+      "rb": 16
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3131",
+      "machine": "ネオアイムジャグラーEX",
+      "games": 8509,
+      "diff": 2976,
+      "bb": 34,
+      "rb": 46
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3132",
+      "machine": "ネオアイムジャグラーEX",
+      "games": 7543,
+      "diff": 838,
+      "bb": 28,
+      "rb": 24
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3133",
+      "machine": "ネオアイムジャグラーEX",
+      "games": 8897,
+      "diff": 2485,
+      "bb": 33,
+      "rb": 44
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3135",
+      "machine": "ネオアイムジャグラーEX",
+      "games": 6399,
+      "diff": 238,
+      "bb": 23,
+      "rb": 19
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3136",
+      "machine": "ネオアイムジャグラーEX",
+      "games": 9497,
+      "diff": 1279,
+      "bb": 34,
+      "rb": 45
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3137",
+      "machine": "ネオアイムジャグラーEX",
+      "games": 4701,
+      "diff": -1332,
+      "bb": 14,
+      "rb": 12
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3138",
+      "machine": "ネオアイムジャグラーEX",
+      "games": 9268,
+      "diff": 2456,
+      "bb": 42,
+      "rb": 35
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3150",
+      "machine": "ネオアイムジャグラーEX",
+      "games": 4683,
+      "diff": -891,
+      "bb": 15,
+      "rb": 11
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3151",
+      "machine": "ネオアイムジャグラーEX",
+      "games": 8896,
+      "diff": 2459,
+      "bb": 37,
+      "rb": 37
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3152",
+      "machine": "マイジャグラーV",
+      "games": 9640,
+      "diff": 4500,
+      "bb": 44,
+      "rb": 48
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3153",
+      "machine": "マイジャグラーV",
+      "games": 8729,
+      "diff": 888,
+      "bb": 29,
+      "rb": 37
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3155",
+      "machine": "マイジャグラーV",
+      "games": 9528,
+      "diff": 1138,
+      "bb": 35,
+      "rb": 35
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3156",
+      "machine": "マイジャグラーV",
+      "games": 9748,
+      "diff": 6141,
+      "bb": 48,
+      "rb": 57
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3157",
+      "machine": "マイジャグラーV",
+      "games": 10003,
+      "diff": 2200,
+      "bb": 38,
+      "rb": 41
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3158",
+      "machine": "マイジャグラーV",
+      "games": 9446,
+      "diff": 3441,
+      "bb": 46,
+      "rb": 33
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3160",
+      "machine": "マイジャグラーV",
+      "games": 8282,
+      "diff": 2506,
+      "bb": 36,
+      "rb": 30
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3201",
+      "machine": "ゴーゴージャグラー3",
+      "games": 9234,
+      "diff": 715,
+      "bb": 37,
+      "rb": 31
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3202",
+      "machine": "ゴーゴージャグラー3",
+      "games": 6785,
+      "diff": -626,
+      "bb": 23,
+      "rb": 23
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3203",
+      "machine": "ゴーゴージャグラー3",
+      "games": 8072,
+      "diff": -926,
+      "bb": 29,
+      "rb": 23
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3205",
+      "machine": "ゴーゴージャグラー3",
+      "games": 9758,
+      "diff": 1385,
+      "bb": 41,
+      "rb": 34
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3206",
+      "machine": "ゴーゴージャグラー3",
+      "games": 9229,
+      "diff": 265,
+      "bb": 33,
+      "rb": 34
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3207",
+      "machine": "ゴーゴージャグラー3",
+      "games": 6497,
+      "diff": -65,
+      "bb": 25,
+      "rb": 16
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3208",
+      "machine": "ファンキージャグラー2",
+      "games": 9115,
+      "diff": 1985,
+      "bb": 38,
+      "rb": 37
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3210",
+      "machine": "ファンキージャグラー2",
+      "games": 9499,
+      "diff": 3338,
+      "bb": 45,
+      "rb": 33
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3211",
+      "machine": "ファンキージャグラー2",
+      "games": 9460,
+      "diff": 4962,
+      "bb": 48,
+      "rb": 40
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3212",
+      "machine": "ファンキージャグラー2",
+      "games": 9699,
+      "diff": 2412,
+      "bb": 42,
+      "rb": 36
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3213",
+      "machine": "ファンキージャグラー2",
+      "games": 9547,
+      "diff": 5703,
+      "bb": 57,
+      "rb": 26
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3215",
+      "machine": "ファンキージャグラー2",
+      "games": 9747,
+      "diff": 2882,
+      "bb": 43,
+      "rb": 34
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3236",
+      "machine": "ハッピージャグラーVIII",
+      "games": 7327,
+      "diff": -97,
+      "bb": 26,
+      "rb": 16
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3237",
+      "machine": "ハッピージャグラーVIII",
+      "games": 4381,
+      "diff": 41,
+      "bb": 13,
+      "rb": 15
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3238",
+      "machine": "ハッピージャグラーVIII",
+      "games": 8232,
+      "diff": 2365,
+      "bb": 37,
+      "rb": 28
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3250",
+      "machine": "ハッピージャグラーVIII",
+      "games": 7759,
+      "diff": -591,
+      "bb": 22,
+      "rb": 33
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3251",
+      "machine": "ハッピージャグラーVIII",
+      "games": 8535,
+      "diff": 3074,
+      "bb": 40,
+      "rb": 30
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3252",
+      "machine": "ハッピージャグラーVIII",
+      "games": 8209,
+      "diff": -150,
+      "bb": 27,
+      "rb": 31
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3253",
+      "machine": "ゴーゴージャグラー3",
+      "games": 6915,
+      "diff": 1421,
+      "bb": 30,
+      "rb": 26
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3255",
+      "machine": "ゴーゴージャグラー3",
+      "games": 8478,
+      "diff": -1456,
+      "bb": 26,
+      "rb": 29
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3256",
+      "machine": "ゴーゴージャグラー3",
+      "games": 6981,
+      "diff": -712,
+      "bb": 24,
+      "rb": 16
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3257",
+      "machine": "ゴーゴージャグラー3",
+      "games": 7417,
+      "diff": 503,
+      "bb": 29,
+      "rb": 25
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3258",
+      "machine": "ゴーゴージャグラー3",
+      "games": 8523,
+      "diff": 512,
+      "bb": 34,
+      "rb": 24
+    },
+    {
+      "date": "2026-01-18",
+      "machineNo": "3260",
+      "machine": "ゴーゴージャグラー3",
+      "games": 8063,
+      "diff": -2271,
+      "bb": 22,
+      "rb": 23
+    }
+  ]
 }
