@@ -10,6 +10,21 @@
 <style>
 :root{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Yu Gothic",Meiryo,sans-serif;color:#202124;background:#f5f6f8}*{box-sizing:border-box}body{margin:0;background:#f5f6f8}.wrap{width:min(1180px,calc(100% - 28px));margin:24px auto 60px}.hero{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:16px}h1{font-size:clamp(24px,4vw,34px);margin:0 0 6px}h2{margin:0;font-size:19px}.muted{color:#6b7280;font-size:13px}.pill{padding:7px 12px;border-radius:999px;background:#e8f0fe;color:#174ea6;font-weight:800;white-space:nowrap}.panel{background:#fff;border:1px solid #e2e5e9;border-radius:14px;padding:18px;margin-top:15px;box-shadow:0 3px 14px rgba(0,0,0,.035)}.controls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.controls label{font-weight:800;font-size:13px;display:flex;flex-direction:column;gap:6px}select{width:100%;border:1px solid #cfd4dc;border-radius:9px;padding:10px 11px;background:#fff;font:inherit}.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:15px}.card{border:1px solid #e1e5eb;border-radius:12px;padding:13px;background:#fafbfc}.card .k{font-size:12px;color:#6b7280}.card .v{font-size:19px;font-weight:900;margin-top:5px;font-variant-numeric:tabular-nums}.blue{color:#1a73e8}.red{color:#d93025}.chartWrap{position:relative;margin-top:14px;border:1px solid #e1e5eb;border-radius:12px;overflow:hidden;background:#fff}.chartWrap canvas{display:block;width:100%;height:430px}.tooltip{display:none;position:absolute;z-index:2;min-width:165px;padding:8px 10px;border-radius:8px;background:rgba(17,24,39,.94);color:#fff;font-size:12px;line-height:1.55;pointer-events:none}.legend{margin-top:9px;color:#667085;font-size:12px;line-height:1.7}.tableWrap{overflow:auto;margin-top:12px;border:1px solid #e1e5eb;border-radius:10px}table{width:100%;min-width:980px;border-collapse:collapse;font-variant-numeric:tabular-nums}th,td{padding:8px 10px;border-bottom:1px solid #edf0f3;text-align:right;white-space:nowrap;font-size:13px}th{background:#f7f8fa;position:sticky;top:0;color:#4b5563}th:nth-child(1),td:nth-child(1),th:nth-child(3),td:nth-child(3){text-align:left}.status{padding:14px;border-radius:10px;background:#f7f9fc;color:#4b5563;line-height:1.7}.error{background:#fff0ef;color:#a61b14;border:1px solid #f0c1bd}.trendBox{margin-top:14px;border:1px solid #dfe5ee;border-radius:12px;padding:14px;background:#f8fafc}.trendBox:empty{display:none}.trendGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}.trendCard{background:#fff;border:1px solid #e1e5eb;border-radius:10px;padding:11px}.trendCard .k{font-size:11px;color:#6b7280}.trendCard .v{font-size:17px;font-weight:900;margin-top:4px}.sectionHead{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}.tiny{font-size:11px;color:#6b7280}@media(max-width:900px){.controls,.cards,.trendGrid{grid-template-columns:1fr 1fr}}@media(max-width:560px){.hero{flex-direction:column}.controls,.cards,.trendGrid{grid-template-columns:1fr}.wrap{width:calc(100% - 18px)}}
 </style>
+<!-- TODAY_FORECAST_STYLE_START -->
+<style>
+.todayForecast{background:linear-gradient(135deg,#fff7ed,#fff);border:1px solid #f0c68a;border-radius:14px;padding:18px;margin:0 0 15px;box-shadow:0 3px 14px rgba(0,0,0,.035)}
+.todayForecast .tfHead{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.todayForecast .tfTitle{font-size:21px;font-weight:900}
+.todayForecast .tfDate{font-size:12px;color:#8a5a00;background:#fff3d6;border:1px solid #f2d496;padding:6px 9px;border-radius:999px;font-weight:800}
+.todayForecast .tfGrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;margin-top:13px}
+.todayForecast .tfCard{background:#fff;border:1px solid #eadfcf;border-radius:11px;padding:11px}
+.todayForecast .tfRank{font-size:11px;color:#6b7280}.todayForecast .tfModel{font-size:15px;font-weight:900;margin-top:3px}.todayForecast .tfMeta{font-size:11px;color:#6b7280;margin-top:5px;line-height:1.55}
+.todayForecast .tfStrong{border-color:#e0a84c;background:#fffaf0}.todayForecast .tfStrong .tfModel{color:#9a5b00}
+.todayForecast .tfPicks{margin-top:12px;padding:11px 12px;background:#fff;border:1px solid #eadfcf;border-radius:10px;font-size:12px;line-height:1.75}
+.todayForecast .tfNote{margin-top:8px;color:#6b7280;font-size:11px;line-height:1.6}
+@media(max-width:900px){.todayForecast .tfGrid{grid-template-columns:1fr 1fr}}@media(max-width:560px){.todayForecast .tfGrid{grid-template-columns:1fr}}
+</style>
+<!-- TODAY_FORECAST_STYLE_END -->
 </head>
 <body>
 <main class="wrap">
@@ -17,6 +32,31 @@
     <div><h1>データ</h1><div id="subtitle" class="muted">データを読み込んでいます…</div></div>
     <div class="pill">データ</div>
   </header>
+
+<!-- TODAY_FORECAST_START -->
+<section class="todayForecast">
+  <div class="tfHead">
+    <div>
+      <div class="tfTitle">本日の予測</div>
+      <div class="muted">麗子の日・過去9回＋直近3回を重視した予測</div>
+    </div>
+    <div class="tfDate">2026/10/19</div>
+  </div>
+  <div class="tfGrid">
+    <div class="tfCard tfStrong"><div class="tfRank">S　本命</div><div class="tfModel">ゴーゴージャグラー3</div><div class="tfMeta">直近3回 +63,885枚<br>プラス台率 83.3%<br>平均 +1,775枚/台</div></div>
+    <div class="tfCard"><div class="tfRank">A+　対抗</div><div class="tfModel">マイジャグラーV</div><div class="tfMeta">直近3回 +54,426枚<br>プラス台率 71.4%<br>直近2回とも +2万枚超</div></div>
+    <div class="tfCard"><div class="tfRank">A　有力</div><div class="tfModel">ファンキージャグラー2</div><div class="tfMeta">直近3回すべて機種プラス<br>長期プラス率 83.3%<br>3210・3212が強い</div></div>
+    <div class="tfCard"><div class="tfRank">B+　穴</div><div class="tfModel">ハッピージャグラーVIII</div><div class="tfMeta">統計値は高水準<br>直近は下降傾向<br>ローテーション上げに注意</div></div>
+    <div class="tfCard"><div class="tfRank">C　抑え</div><div class="tfModel">ネオアイムジャグラーEX</div><div class="tfMeta">直近プラス台率 46.2%<br>機種全体より単品狙い<br>3110・3130・3112</div></div>
+  </div>
+  <div class="tfPicks">
+    <b>朝の優先：</b> ゴージャグ3 → マイジャグV → ファンキー2 → ハッピー → ネオアイム<br>
+    <b>ゴージャグ注目：</b> 3255 / 3256 / 3253 / 3205 / 3260。固定実績では3201も強い。特に3253〜3260側を重点確認。<br>
+    <b>マイジャグ注目：</b> 3152 / 3101 / 3103。　<b>ファンキー：</b> 3210 / 3212。
+  </div>
+  <div class="tfNote">予測は保存済みの過去実績から算出した傾向で、当日の設定投入を保証するものではありません。公開データ最終日：2026/09/19。</div>
+</section>
+<!-- TODAY_FORECAST_END -->
 
   <div id="loadStatus" class="panel status">最新データを読み込んでいます…</div>
 
